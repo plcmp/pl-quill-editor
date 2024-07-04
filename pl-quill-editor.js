@@ -24,7 +24,7 @@ class PlQuillEditor extends PlElement {
     `;
 
     static template = html`
-        <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+        <link href="quill/dist/quill.snow.css" rel="stylesheet">
         <div id="toolbar"></div>
         <div id="editor"></div>
     `;
@@ -93,14 +93,11 @@ class PlQuillEditor extends PlElement {
             this._quill.selection.update()
         });
 
-        this._quill.on('text-change', (delta, oldDelta, source) => {
-            let debouncer = debounce(() => {
-                this.fromEditor = true;
-                this.value = this._quill.root.getInnerHTML()
-                this.fromEditor = false;
-            }, 100)
-            debouncer();
-        });
+        this._quill.on('text-change', debounce((delta, oldDelta, source) => {
+            this.fromEditor = true;
+            this.value = this._quill.root.getInnerHTML()
+            this.fromEditor = false;
+        }, 100));
     }
 
     _valueObserver(value) {
